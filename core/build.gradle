@@ -17,6 +17,7 @@ dependencies {
 
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${versions.kotlin}"
     compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutine}"
+    compile "com.squareup.moshi:moshi-adapters:${versions.moshiadapter}"
 
     compile "se.ansman.kotshi:api:${versions.kotshi}"
     kapt "se.ansman.kotshi:compiler:${versions.kotshi}"
