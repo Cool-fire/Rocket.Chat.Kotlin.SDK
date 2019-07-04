@@ -25,8 +25,14 @@ import chat.rocket.core.internal.realtime.socket.model.StreamMessage
 import chat.rocket.core.model.Message
 import chat.rocket.core.model.Myself
 import chat.rocket.core.model.Room
+import chat.rocket.core.model.block.ActionBlock
+import chat.rocket.core.model.block.Block
+import chat.rocket.core.model.block.SectionBlock
+import chat.rocket.core.model.block.elements.ButtonElement
+import chat.rocket.core.model.block.elements.Element
 import chat.rocket.core.model.url.MetaJsonAdapter
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -47,6 +53,11 @@ class RocketChatClient private constructor(
         get() = Dispatchers.Default
 
     internal val moshi: Moshi = Moshi.Builder()
+        .add(PolymorphicJsonAdapterFactory.of(Block::class.java, "type")
+                .withSubtype(SectionBlock::class.java, "section")
+                .withSubtype(ActionBlock::class.java, "actions"))
+        .add(PolymorphicJsonAdapterFactory.of(Element::class.java, "type")
+                    .withSubtype(ButtonElement::class.java, "button"))
         .add(FallbackSealedClassJsonAdapter.ADAPTER_FACTORY)
         .add(RestResult.JsonAdapterFactory())
         .add(RestMultiResult.JsonAdapterFactory())
