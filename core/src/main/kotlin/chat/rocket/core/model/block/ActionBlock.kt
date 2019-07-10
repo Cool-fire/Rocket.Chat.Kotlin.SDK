@@ -7,6 +7,6 @@ import se.ansman.kotshi.JsonSerializable
 @JsonSerializable
 data class ActionBlock(
         override val type: String,
-        @Json(name = "block_id") override val blockId: String,
+        @Json(name = "block_id") override val blockId: String? = null,
         var elements : List<Element>
 ) : Block

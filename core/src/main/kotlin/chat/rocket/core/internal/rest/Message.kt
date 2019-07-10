@@ -4,12 +4,10 @@ import chat.rocket.common.model.BaseResult
 import chat.rocket.common.model.RoomType
 import chat.rocket.core.RocketChatClient
 import chat.rocket.core.internal.RestResult
-import chat.rocket.core.internal.model.DeletePayload
-import chat.rocket.core.internal.model.MessageReportPayload
-import chat.rocket.core.internal.model.PostMessagePayload
-import chat.rocket.core.internal.model.ReactionPayload
+import chat.rocket.core.internal.model.*
 import chat.rocket.core.internal.model.SendMessageBody
 import chat.rocket.core.internal.model.SendMessagePayload
+import chat.rocket.core.internal.model.elementPayload.RequestPayload
 import chat.rocket.core.model.DeleteResult
 import chat.rocket.core.model.Message
 import chat.rocket.core.model.PagedResult
@@ -392,6 +390,29 @@ suspend fun RocketChatClient.reportMessage(
     val body = RequestBody.create(MEDIA_TYPE_JSON, payloadBody)
 
     val url = requestUrl(restUrl, "chat.reportMessage").build()
+    val request = requestBuilderForAuthenticatedMethods(url).post(body).build()
+
+    return@withContext handleRestCall<BaseResult>(request, BaseResult::class.java).success
+}
+
+/**
+ * Sends RequestPayload to the webhookurl specified for a bot
+ *
+ * @param type The type of payload for blocks it's block_actions
+ * @param requestPayload RequestPayload for the corresponding block element
+ */
+
+suspend fun RocketChatClient.sendRequestPayload(
+        type: String,
+        requestPayload: RequestPayload
+) = withContext(Dispatchers.IO) {
+    val payload = ActionPayload(type, requestPayload)
+    val adapter = moshi.adapter(ActionPayload::class.java)
+    val payloadBody = adapter.toJson(payload)
+
+    val body = RequestBody.create(MEDIA_TYPE_JSON, payloadBody)
+
+    val url = requestUrl(restUrl, "chat.sendMessageToBot").build()
     val request = requestBuilderForAuthenticatedMethods(url).post(body).build()
 
     return@withContext handleRestCall<BaseResult>(request, BaseResult::class.java).success

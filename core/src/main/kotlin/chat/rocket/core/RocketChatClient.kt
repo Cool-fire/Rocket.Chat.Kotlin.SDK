@@ -19,6 +19,8 @@ import chat.rocket.core.internal.RoomListAdapterFactory
 import chat.rocket.core.internal.CoreJsonAdapterFactory
 import chat.rocket.core.internal.ReactionsAdapter
 import chat.rocket.core.internal.model.Subscription
+import chat.rocket.core.internal.model.elementPayload.ButtonElementPayload
+import chat.rocket.core.internal.model.elementPayload.ElementPayload
 import chat.rocket.core.internal.realtime.socket.Socket
 import chat.rocket.core.internal.realtime.socket.model.State
 import chat.rocket.core.internal.realtime.socket.model.StreamMessage
@@ -58,6 +60,8 @@ class RocketChatClient private constructor(
                 .withSubtype(ActionBlock::class.java, "actions"))
         .add(PolymorphicJsonAdapterFactory.of(Element::class.java, "type")
                     .withSubtype(ButtonElement::class.java, "button"))
+        .add(PolymorphicJsonAdapterFactory.of(ElementPayload::class.java, "type")
+                    .withSubtype(ButtonElementPayload::class.java, "button"))
         .add(FallbackSealedClassJsonAdapter.ADAPTER_FACTORY)
         .add(RestResult.JsonAdapterFactory())
         .add(RestMultiResult.JsonAdapterFactory())
