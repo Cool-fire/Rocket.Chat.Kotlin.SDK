@@ -8,7 +8,8 @@ import se.ansman.kotshi.JsonSerializable
 @JsonSerializable
 data class ButtonElement (
         override val type : String,
-        @Json(name = "action_id") override val actionId : String,
+        @Json(name = "action_id")
+        val actionId : String,
         val text : TextObject,
         val url : String? = null,
         val value : String? = null,

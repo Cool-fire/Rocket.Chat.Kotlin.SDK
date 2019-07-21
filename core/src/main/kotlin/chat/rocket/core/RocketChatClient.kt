@@ -20,7 +20,9 @@ import chat.rocket.core.internal.CoreJsonAdapterFactory
 import chat.rocket.core.internal.ReactionsAdapter
 import chat.rocket.core.internal.model.Subscription
 import chat.rocket.core.internal.model.elementPayload.ButtonElementPayload
+import chat.rocket.core.internal.model.elementPayload.DatePickerElementPayload
 import chat.rocket.core.internal.model.elementPayload.ElementPayload
+import chat.rocket.core.internal.model.elementPayload.OverflowElementPayload
 import chat.rocket.core.internal.realtime.socket.Socket
 import chat.rocket.core.internal.realtime.socket.model.State
 import chat.rocket.core.internal.realtime.socket.model.StreamMessage
@@ -31,7 +33,9 @@ import chat.rocket.core.model.block.ActionBlock
 import chat.rocket.core.model.block.Block
 import chat.rocket.core.model.block.SectionBlock
 import chat.rocket.core.model.block.elements.ButtonElement
+import chat.rocket.core.model.block.elements.DatePickerElement
 import chat.rocket.core.model.block.elements.Element
+import chat.rocket.core.model.block.elements.OverflowElement
 import chat.rocket.core.model.url.MetaJsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory
@@ -59,9 +63,13 @@ class RocketChatClient private constructor(
                 .withSubtype(SectionBlock::class.java, "section")
                 .withSubtype(ActionBlock::class.java, "actions"))
         .add(PolymorphicJsonAdapterFactory.of(Element::class.java, "type")
-                    .withSubtype(ButtonElement::class.java, "button"))
+                    .withSubtype(ButtonElement::class.java, "button")
+                    .withSubtype(OverflowElement::class.java, "overflow")
+                    .withSubtype(DatePickerElement::class.java, "datepicker"))
         .add(PolymorphicJsonAdapterFactory.of(ElementPayload::class.java, "type")
-                    .withSubtype(ButtonElementPayload::class.java, "button"))
+                    .withSubtype(ButtonElementPayload::class.java, "button")
+                    .withSubtype(OverflowElementPayload::class.java, "overflow")
+                    .withSubtype(DatePickerElementPayload::class.java, "datepicker"))
         .add(FallbackSealedClassJsonAdapter.ADAPTER_FACTORY)
         .add(RestResult.JsonAdapterFactory())
         .add(RestMultiResult.JsonAdapterFactory())
