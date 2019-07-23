@@ -19,14 +19,23 @@ import chat.rocket.core.internal.RoomListAdapterFactory
 import chat.rocket.core.internal.CoreJsonAdapterFactory
 import chat.rocket.core.internal.ReactionsAdapter
 import chat.rocket.core.internal.model.Subscription
+import chat.rocket.core.internal.model.elementPayload.ButtonElementPayload
+import chat.rocket.core.internal.model.elementPayload.DatePickerElementPayload
+import chat.rocket.core.internal.model.elementPayload.ElementPayload
+import chat.rocket.core.internal.model.elementPayload.OverflowElementPayload
 import chat.rocket.core.internal.realtime.socket.Socket
 import chat.rocket.core.internal.realtime.socket.model.State
 import chat.rocket.core.internal.realtime.socket.model.StreamMessage
 import chat.rocket.core.model.Message
 import chat.rocket.core.model.Myself
 import chat.rocket.core.model.Room
+import chat.rocket.core.model.block.ActionBlock
+import chat.rocket.core.model.block.Block
+import chat.rocket.core.model.block.SectionBlock
+import chat.rocket.core.model.block.elements.*
 import chat.rocket.core.model.url.MetaJsonAdapter
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -47,6 +56,18 @@ class RocketChatClient private constructor(
         get() = Dispatchers.Default
 
     internal val moshi: Moshi = Moshi.Builder()
+        .add(PolymorphicJsonAdapterFactory.of(Block::class.java, "type")
+                .withSubtype(SectionBlock::class.java, "section")
+                .withSubtype(ActionBlock::class.java, "actions"))
+        .add(PolymorphicJsonAdapterFactory.of(Element::class.java, "type")
+                    .withSubtype(ButtonElement::class.java, "button")
+                    .withSubtype(OverflowElement::class.java, "overflow")
+                    .withSubtype(DatePickerElement::class.java, "datepicker")
+                    .withSubtype(ImageElement::class.java, "image"))
+        .add(PolymorphicJsonAdapterFactory.of(ElementPayload::class.java, "type")
+                    .withSubtype(ButtonElementPayload::class.java, "button")
+                    .withSubtype(OverflowElementPayload::class.java, "overflow")
+                    .withSubtype(DatePickerElementPayload::class.java, "datepicker"))
         .add(FallbackSealedClassJsonAdapter.ADAPTER_FACTORY)
         .add(RestResult.JsonAdapterFactory())
         .add(RestMultiResult.JsonAdapterFactory())

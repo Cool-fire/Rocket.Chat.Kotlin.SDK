@@ -6,6 +6,8 @@ ext {
             dokka        : '0.9.17',
             kotshi       : '1.0.6',
             okhttp       : '3.13.1',
-            moshi        : '1.8.0'
+            moshi        : '1.8.0',
+            moshiadapter : '1.8.0',
+            room         : '2.0.0'
     ]
 }
